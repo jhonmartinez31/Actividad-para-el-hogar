@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package store;
+
+// ==========================================
+// Definición del Servicio StoreService
+// ==========================================
+service StoreService {
+    // Método Unary: recibe los datos de la orden y retorna la confirmación
+    rpc CreateOrder (OrderRequest) returns (OrderResponse);
+
+    // Método Server-Streaming: recibe un OrderId y transmite una secuencia continua de cambios de estado
+    rpc StreamOrderUpdates (OrderId) returns (stream OrderStatus);
+}
+
+// Mensaje de solicitud para la creación de un nuevo pedido
+message OrderRequest {
+    string customer_id = 1;
+    string item_name = 2;
+    int32 quantity = 3;
+    double price = 4;
+}
+
+// Mensaje de respuesta con los datos iniciales del pedido registrado
+message OrderResponse {
+    string order_id = 1;
+    string status = 2;
+    string message = 3;
+    string timestamp = 4;
+}
+
+// Identificador único del pedido a consultar
+message OrderId {
+    string order_id = 1;
+}
+
+// Estado emitido a través del flujo de streaming del servidor
+message OrderStatus {
+    string order_id = 1;
+    string status = 2;
+    string detail = 3;
+    string timestamp = 4;
+}
